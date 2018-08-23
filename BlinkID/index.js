@@ -18,13 +18,15 @@ const BlinkIDNative = Platform.select({
  * 3. String licenseKey: BlinkID license key bount to application ID for Android or iOS. To obtain
  *                       valid license key, please visit http://microblink.com/login or
  *                       contact us at http://help.microblink.com
+ * 4.Boolean showTimeLimitedLicenseWarning: flag which indicates whether warning for time limited
+                                            license key will be shown
  */
 class BlinkIDWrapper {
-      async scanWithCamera(overlaySettings, recognizerCollection, licenseKey) {
+      async scanWithCamera(overlaySettings, recognizerCollection, licenseKey, showTimeLimitedLicenseWarning = true) {
             try {
                   var bla = NativeModules;
                   console.log(bla);
-                  const nativeResults = await BlinkIDNative.scanWithCamera(overlaySettings, recognizerCollection, licenseKey);
+                  const nativeResults = await BlinkIDNative.scanWithCamera(overlaySettings, recognizerCollection, licenseKey, showTimeLimitedLicenseWarning);
                   if (nativeResults.length != recognizerCollection.recognizerArray.length) {
                         console.log("INTERNAL ERROR: native plugin returned wrong number of results!");
                         return [];

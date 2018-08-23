@@ -52,7 +52,7 @@ public class MicroblinkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void scanWithCamera(ReadableMap jsonOverlaySettings, ReadableMap jsonRecognizerCollection, String licenseKey, Promise promise) {
+    public void scanWithCamera(ReadableMap jsonOverlaySettings, ReadableMap jsonRecognizerCollection, String licenseKey, boolean showTimeLimitedLicenseWarning, Promise promise) {
         Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             promise.reject(ERROR_ACTIVITY_DOES_NOT_EXIST, "Activity does not exist");
@@ -61,7 +61,7 @@ public class MicroblinkModule extends ReactContextBaseJavaModule {
 
         // Store the promise to resolve/reject when scanning is done
         mScanPromise = promise;
-        setLicense(licenseKey);
+        setLicense(licenseKey, showTimeLimitedLicenseWarning);
 
         mRecognizerBundle = RecognizerSerializers.INSTANCE.deserializeRecognizerCollection(jsonRecognizerCollection);
         UISettings overlaySettings = OverlaySettingsSerializers.INSTANCE.getOverlaySettings(jsonOverlaySettings, mRecognizerBundle);
@@ -76,7 +76,8 @@ public class MicroblinkModule extends ReactContextBaseJavaModule {
         ActivityRunner.startActivityForResult(getCurrentActivity(), REQUEST_CODE, overlaySettings);
     }
 
-    private void setLicense( String licenseKey ) {
+    private void setLicense( String licenseKey, boolean showTimeLimitedLicenseWarning) {
+        MicroblinkSDK.setShowTimeLimitedLicenseWarning(showTimeLimitedLicenseWarning);
         MicroblinkSDK.setLicenseKey(licenseKey, this.getCurrentActivity());
         MicroblinkSDK.setIntentDataTransferMode(IntentDataTransferMode.PERSISTED_OPTIMISED);
     }
